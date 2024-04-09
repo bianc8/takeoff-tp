@@ -10,7 +10,15 @@ export const campaigns: ICampaign[] = [
     prizePool: 5000,
     startDate: "01/04/2024",
     endDate: "20/04/2024",
-    candidates: [],
+    candidates: [
+      {
+        id: 1,
+        name: "John Doe",
+        votes: 10,
+        applicationLetter: "Application Letter",
+        votedBy: ["Jane Doe", "Alice Doe"],
+      },
+    ],
     voters: 76,
     numberOfWinners: 3,
   },
