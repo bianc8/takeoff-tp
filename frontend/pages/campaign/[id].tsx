@@ -4,7 +4,15 @@ import Navbar from "../../components/Navbar";
 import type { ICampaign, ICandidate } from "../../components/Campaigns";
 import { campaigns } from "../../lib/campaigns";
 import { formatStringToUSD } from "../../lib/utils";
-import { Modal, ModalClose, Sheet, Textarea, Typography } from "@mui/joy";
+import {
+  Modal,
+  ModalClose,
+  Select,
+  Option,
+  Sheet,
+  Textarea,
+  Typography,
+} from "@mui/joy";
 
 const Page = () => {
   const [candidateVotes, setCandidateVotes] = useState<number>(0);
@@ -44,7 +52,10 @@ const Page = () => {
           <h1 className="text-3xl font-semibold">{campaign?.title}</h1>
           {campaign?.status == "Open" ? (
             <div className="flex gap-4">
-              <button className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg">
+              <button
+                className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg"
+                onClick={() => setOpenNominateModal(true)}
+              >
                 Nominate
               </button>
               <button
@@ -227,6 +238,7 @@ const Page = () => {
                   level="h4"
                   textColor="inherit"
                   fontWeight="lg"
+                  marginBottom={2}
                 >
                   Application for{" "}
                   <Typography
@@ -244,15 +256,110 @@ const Page = () => {
                   </Typography>
                 </Typography>
               </div>
+              <Typography
+                component="h3"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                marginTop={2}
+              >
+                Why should we consider you?
+              </Typography>
               <Textarea
                 minRows={2}
                 placeholder="Write your application letter..."
                 size="lg"
-                variant="outlined"
-                className="mt-5"
+                className="mt-2"
               />
               <Sheet>
-                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1">
+                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1">
+                  Verify with WorldID
+                </button>
+                <button
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 my-1 opacity-30"
+                  disabled
+                >
+                  Apply
+                </button>
+              </Sheet>
+            </Sheet>
+          </Modal>
+
+          {/* Nominate modal */}
+          <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={openNominateModal}
+            onClose={() => setOpenNominateModal(false)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Sheet
+              variant="outlined"
+              sx={{
+                minWidth: 500,
+                maxWidth: 700,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+              }}
+            >
+              <ModalClose variant="plain" sx={{ m: 1 }} />
+              <div id="modal-title">
+                <Typography
+                  component="h2"
+                  level="h4"
+                  textColor="inherit"
+                  fontWeight="lg"
+                  marginBottom={2}
+                >
+                  Nominate your friend for{" "}
+                  <Typography
+                    component="h2"
+                    level="h4"
+                    style={{
+                      fontSize: 20,
+                      background:
+                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {campaign?.title}
+                  </Typography>
+                </Typography>
+              </div>
+              <Select
+                placeholder="Nominate one of your friends…"
+                size="lg"
+                variant="outlined"
+                required
+              >
+                <Option value="friend-1">Friend 1</Option>
+                <Option value="friend-2">Friend 2</Option>
+                <Option value="friend-3">Friend 3</Option>
+              </Select>
+
+              <Typography
+                component="h3"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                marginTop={2}
+              >
+                Why should we consider your friend?
+              </Typography>
+              <Textarea
+                minRows={2}
+                placeholder="Write the application letter for your friend..."
+                size="lg"
+                className="mt-2"
+              />
+              <Sheet>
+                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1">
                   Verify with WorldID
                 </button>
                 <button

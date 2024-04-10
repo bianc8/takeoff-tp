@@ -48,9 +48,7 @@ const Campaign = ({ campaign }: { campaign: ICampaign }) => {
       ? 100
       : campaign.status === "Coming Soon"
       ? 0.1
-      : (current / total) * 100;
-
-  console.log(campaign.title, total, current, progress);
+      : parseFloat(parseFloat(`${(current / total) * 100}`).toFixed(2));
 
   return (
     <div className="w-full bg-white shadow-lg rounded-lg p-4 m-4">
