@@ -4,12 +4,15 @@ import Navbar from "../../components/Navbar";
 import type { ICampaign, ICandidate } from "../../components/Campaigns";
 import { campaigns } from "../../lib/campaigns";
 import { formatStringToUSD } from "../../lib/utils";
-import { Modal, ModalClose, Sheet, Typography } from "@mui/joy";
+import { Modal, ModalClose, Sheet, Textarea, Typography } from "@mui/joy";
 
 const Page = () => {
   const [candidateVotes, setCandidateVotes] = useState<number>(0);
   const [candidate, setCandidate] = useState<ICandidate>();
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openVotingModal, setOpenVotingModal] = useState<boolean>(false);
+  const [openApplicationModal, setOpenApplicationModal] =
+    useState<boolean>(false);
+  const [openNominateModal, setOpenNominateModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const router = useRouter();
@@ -44,7 +47,10 @@ const Page = () => {
               <button className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg">
                 Nominate
               </button>
-              <button className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg">
+              <button
+                className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg"
+                onClick={() => setOpenApplicationModal(true)}
+              >
                 Apply
               </button>
             </div>
@@ -90,7 +96,7 @@ const Page = () => {
                     onClick={() => {
                       setCandidateVotes(candidate.votes + 1);
                       setCandidate(candidate);
-                      setOpenModal(true);
+                      setOpenVotingModal(true);
                     }}
                     className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg"
                   >
@@ -101,11 +107,12 @@ const Page = () => {
               </div>
             ))}
           </div>
+          {/* Voting modal */}
           <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
-            open={openModal}
-            onClose={() => setOpenModal(false)}
+            open={openVotingModal}
+            onClose={() => setOpenVotingModal(false)}
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -188,6 +195,73 @@ const Page = () => {
                   Vote
                 </button>
               </Typography>
+            </Sheet>
+          </Modal>
+
+          {/* Application modal */}
+          <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={openApplicationModal}
+            onClose={() => setOpenApplicationModal(false)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Sheet
+              variant="outlined"
+              sx={{
+                minWidth: 500,
+                maxWidth: 700,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+              }}
+            >
+              <ModalClose variant="plain" sx={{ m: 1 }} />
+              <div id="modal-title">
+                <Typography
+                  component="h2"
+                  level="h4"
+                  textColor="inherit"
+                  fontWeight="lg"
+                >
+                  Application for{" "}
+                  <Typography
+                    component="h2"
+                    level="h4"
+                    style={{
+                      fontSize: 20,
+                      background:
+                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {campaign?.title}
+                  </Typography>
+                </Typography>
+              </div>
+              <Textarea
+                minRows={2}
+                placeholder="Write your application letter..."
+                size="lg"
+                variant="outlined"
+                className="mt-5"
+              />
+              <Sheet>
+                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1">
+                  Verify with WorldID
+                </button>
+                <button
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
+                  disabled
+                >
+                  Apply
+                </button>
+              </Sheet>
             </Sheet>
           </Modal>
         </div>
