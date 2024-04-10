@@ -1,11 +1,17 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import type { ICampaign } from "../../components/Campaigns";
+import type { ICampaign, ICandidate } from "../../components/Campaigns";
 import { campaigns } from "../../lib/campaigns";
 import { formatStringToUSD } from "../../lib/utils";
+import { Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 
 const Page = () => {
+  const [candidateVotes, setCandidateVotes] = useState<number>(0);
+  const [candidate, setCandidate] = useState<ICandidate>();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
   const router = useRouter();
   const { id } = router.query;
   const campaign = campaigns.find((c: ICampaign) => `${c.id}` === id);
@@ -13,6 +19,19 @@ const Page = () => {
   useEffect(() => {
     // fetch data with id
   }, [id]);
+
+  const checkVotes = (e: React.FormEvent<HTMLInputElement>, name: string) => {
+    // check if user has votes left
+    if (parseInt(e.currentTarget.value) <= (candidate?.votes || 0)) {
+      // error vote
+      setError(
+        `You can give at least ${1 + (candidate?.votes || 0)} votes to ${name}`
+      );
+    } else {
+      setError("");
+      setCandidateVotes(parseInt(e.currentTarget.value));
+    }
+  };
 
   return (
     <div>
@@ -59,25 +78,118 @@ const Page = () => {
         <hr />
         <div className="mt-5">
           <h2 className="text-2xl font-semibold">Candidates</h2>
-          <div className="flex flex-row">
+          <div className="flex flex-col">
             {campaign?.candidates.map((candidate) => (
               <div
                 key={candidate.id}
                 className="w-full flex border border-gray-200 rounded-lg p-4 justify-between text-center"
               >
                 <h3 className="text-xl font-semibold">{candidate.name}</h3>
-                <div className="flex gap-3">
-                  <button className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg">
-                    View
-                  </button>
-                  <button className="border border-violet-600 bg-gray-500 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg">
+                <div className="flex gap-3 text-center items-center align-middle">
+                  <button
+                    onClick={() => {
+                      setCandidateVotes(candidate.votes + 1);
+                      setCandidate(candidate);
+                      setOpenModal(true);
+                    }}
+                    className="border border-violet-600 bg-violet-600 text-white hover:text-violet-600 hover:bg-white py-2 px-4 rounded-lg"
+                  >
                     Vote
                   </button>
-                  <p className="text-lg">{candidate.votedBy.length}</p>
+                  <p className="text-lg w-20">{candidate.votes}</p>
                 </div>
               </div>
             ))}
           </div>
+          <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Sheet
+              variant="outlined"
+              sx={{
+                maxWidth: 500,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+              }}
+            >
+              <ModalClose variant="plain" sx={{ m: 1 }} />
+              <div id="modal-title">
+                <Typography
+                  component="h2"
+                  level="h4"
+                  textColor="inherit"
+                  fontWeight="lg"
+                >
+                  Vote for{" "}
+                  <Typography
+                    component="h2"
+                    level="h4"
+                    style={{
+                      fontSize: 20,
+                      background:
+                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {candidate?.name}
+                  </Typography>
+                </Typography>
+              </div>
+              <Typography
+                id="modal-desc"
+                textColor="text.tertiary"
+                className="min-h-20 border border-gray-200 rounded-lg p-2"
+              >
+                {candidate?.applicationLetter}
+              </Typography>
+              <Typography id="modal-desc" textColor="text.tertiary">
+                You have{" "}
+                <span>
+                  <b>XYZ</b>
+                </span>{" "}
+                votes left
+              </Typography>
+              <Typography id="modal-desc" textColor="text.tertiary">
+                How many votes do you want to give?
+                <input
+                  type="number"
+                  defaultValue={candidate?.votes || 0 + 1}
+                  value={candidateVotes}
+                  onChange={(e) => checkVotes(e, candidate?.name || "")}
+                />
+              </Typography>
+              <Typography id="modal-desc" color="danger">
+                {error}
+              </Typography>
+              <Typography id="modal-desc">
+                Top up to vote
+                <Sheet>
+                  <button className="border border-green-700 text-white bg-green-800 hover:bg-green-600 py-2 px-4 rounded-lg my-1">
+                    Pay with Crypto
+                  </button>
+                  <button className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-800 py-2 px-4 rounded-lg ml-2 my-1">
+                    Pay with Credit Card
+                  </button>
+                </Sheet>
+                <button
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
+                  disabled
+                >
+                  Vote
+                </button>
+              </Typography>
+            </Sheet>
+          </Modal>
         </div>
       </div>
     </div>
