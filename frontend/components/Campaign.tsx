@@ -1,7 +1,6 @@
 import { LinearProgress } from "@mui/joy";
 import moment from "moment";
 import Link from "next/link";
-import { campaigns } from "../lib/campaigns";
 import { formatStringToUSD } from "../lib/utils";
 
 export type ICandidate = {
@@ -10,6 +9,7 @@ export type ICandidate = {
   votes: number;
   applicationLetter: string;
   votedBy: string[];
+  prize: number;
 };
 
 export type ICampaign = {
@@ -24,16 +24,6 @@ export type ICampaign = {
   numberOfWinners: number;
   candidates: ICandidate[];
   voters: number;
-};
-
-const Campaigns = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-      {campaigns.map((campaign) => (
-        <Campaign key={campaign.id} campaign={campaign} />
-      ))}
-    </div>
-  );
 };
 
 const Campaign = ({ campaign }: { campaign: ICampaign }) => {
@@ -52,11 +42,13 @@ const Campaign = ({ campaign }: { campaign: ICampaign }) => {
 
   return (
     <div className="w-full bg-white shadow-lg rounded-lg p-4 m-4">
-      <img
-        src={campaign.image}
-        alt={campaign.title}
-        className="w-full h-64 object-cover object-center rounded-lg"
-      />
+      <Link href={`/campaign/${campaign.id}`}>
+        <img
+          src={campaign.image}
+          alt={campaign.title}
+          className="w-full h-64 object-cover object-center rounded-lg"
+        />
+      </Link>
       <div className="mt-4 w-full">
         <Link href={`/campaign/${campaign.id}`}>
           <h2 className="text-xl font-semibold">{campaign.title}</h2>
@@ -95,4 +87,4 @@ const Campaign = ({ campaign }: { campaign: ICampaign }) => {
   );
 };
 
-export default Campaigns;
+export default Campaign;

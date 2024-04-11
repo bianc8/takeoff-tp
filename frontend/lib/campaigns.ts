@@ -1,4 +1,4 @@
-import type { ICampaign } from "../components/Campaigns";
+import type { ICampaign } from "../components/Campaign";
 
 export const campaigns: ICampaign[] = [
   {
@@ -34,7 +34,7 @@ export const campaigns: ICampaign[] = [
       },
       {
         id: 4,
-        name: "Anne Frank",
+        name: "Anita Franklin",
         votes: 4,
         applicationLetter: "Application Letter2",
         votedBy: ["Jane Doe"],
@@ -65,7 +65,40 @@ export const campaigns: ICampaign[] = [
     prizePool: 7500,
     startDate: "01/04/2024",
     endDate: "08/04/2024",
-    candidates: [],
+    candidates: [
+      {
+        id: 1,
+        name: "John Doe",
+        votes: 10,
+        applicationLetter: "Application Letter",
+        votedBy: ["Jane Doe", "Alice Doe"],
+        prize: 850,
+      },
+      {
+        id: 2,
+        name: "Anne Minnie",
+        votes: 5,
+        applicationLetter: "Application Letter2",
+        votedBy: ["Jane Doe"],
+        prize: 540,
+      },
+      {
+        id: 3,
+        name: "Johnny Sins",
+        votes: 11,
+        applicationLetter: "Application Letter",
+        votedBy: ["Jane Doe", "Alice Doe"],
+        prize: 500,
+      },
+      {
+        id: 4,
+        name: "Anita Franklin",
+        votes: 4,
+        applicationLetter: "Application Letter2",
+        votedBy: ["Jane Doe"],
+        prize: 450,
+      },
+    ],
     voters: 56,
     numberOfWinners: 7,
   },

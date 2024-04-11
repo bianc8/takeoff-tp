@@ -5,6 +5,8 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import { useRouter } from "next/router";
 import { baseSepolia } from "viem/chains";
 import { SmartAccountProvider } from "../hooks/SmartAccountContext";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "@fontsource/inter";
@@ -48,27 +50,34 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>TakeOff by TalentProtocol</title>
         <meta name="description" content="TakeOff by TalentProtocol" />
       </Head>
-      <PrivyProvider
-        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ""}
-        config={{
-          loginMethods: ["email", "linkedin", "farcaster", "github", "wallet"],
-          appearance: {
-            theme: "light",
-            accentColor: "#676FFF",
-          },
-          embeddedWallets: {
-            createOnLogin: "all-users",
-            noPromptOnSignature: true,
-          },
-          defaultChain: baseSepolia,
-        }}
-        onSuccess={() => router.push("/dashboard")}
-      >
-        <SmartAccountProvider>
-          <ToastContainer position="top-right" />
-          <Component {...pageProps} />
-        </SmartAccountProvider>
-      </PrivyProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <PrivyProvider
+          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ""}
+          config={{
+            loginMethods: [
+              "email",
+              "linkedin",
+              "farcaster",
+              "github",
+              "wallet",
+            ],
+            appearance: {
+              theme: "light",
+              accentColor: "#676FFF",
+            },
+            embeddedWallets: {
+              createOnLogin: "all-users",
+              noPromptOnSignature: true,
+            },
+            defaultChain: baseSepolia,
+          }}
+        >
+          <SmartAccountProvider>
+            <ToastContainer position="top-right" />
+            <Component {...pageProps} />
+          </SmartAccountProvider>
+        </PrivyProvider>
+      </LocalizationProvider>
     </>
   );
 }

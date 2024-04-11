@@ -1,7 +1,8 @@
 import Head from "next/head";
-import Campaigns from "../components/Campaigns";
 import { useRouter } from "next/router";
+import { campaigns } from "../lib/campaigns";
 import Navbar from "../components/Navbar";
+import Campaign from "../components/Campaign";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,7 +27,11 @@ export default function LoginPage() {
             Create campaign
           </button>
           <h1 className="text-3xl font-semibold mt-10">Campaigns</h1>
-          <Campaigns />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            {campaigns.map((campaign) => (
+              <Campaign key={campaign.id} campaign={campaign} />
+            ))}
+          </div>
         </div>
       </main>
     </>

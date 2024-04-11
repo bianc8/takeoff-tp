@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import type { ICampaign, ICandidate } from "../../components/Campaigns";
+import type { ICampaign, ICandidate } from "../../components/Campaign";
 import { campaigns } from "../../lib/campaigns";
 import { formatStringToUSD } from "../../lib/utils";
 import {
@@ -113,7 +113,22 @@ const Page = () => {
                   >
                     Vote
                   </button>
-                  <p className="text-lg w-20">{candidate.votes}</p>
+                  <div className="flex flex-col">
+                    <p className="text-lg w-20">
+                      {campaign.status === "Ended"
+                        ? formatStringToUSD.format(candidate.prize)
+                        : `${candidate.votes} votes`}
+                    </p>
+                    <p className="text-md">
+                      {campaign.status === "Ended"
+                        ? `${parseFloat(
+                            parseFloat(
+                              `${(candidate.prize / campaign.prizePool) * 100}`
+                            ).toFixed(2)
+                          )} %`
+                        : ""}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -140,29 +155,26 @@ const Page = () => {
               }}
             >
               <ModalClose variant="plain" sx={{ m: 1 }} />
-              <div id="modal-title">
+              <Typography
+                id="modal-title"
+                component="h2"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+              >
+                Vote for{" "}
                 <Typography
-                  component="h2"
-                  level="h4"
-                  textColor="inherit"
-                  fontWeight="lg"
+                  style={{
+                    fontSize: 20,
+                    background:
+                      "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
                 >
-                  Vote for{" "}
-                  <Typography
-                    component="h2"
-                    level="h4"
-                    style={{
-                      fontSize: 20,
-                      background:
-                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {candidate?.name}
-                  </Typography>
+                  {candidate?.name}
                 </Typography>
-              </div>
+              </Typography>
               <Typography
                 id="modal-desc"
                 textColor="text.tertiary"
@@ -181,7 +193,6 @@ const Page = () => {
                 How many votes do you want to give?
                 <input
                   type="number"
-                  defaultValue={candidate?.votes || 0 + 1}
                   value={candidateVotes}
                   onChange={(e) => checkVotes(e, candidate?.name || "")}
                 />
@@ -189,23 +200,21 @@ const Page = () => {
               <Typography id="modal-desc" color="danger">
                 {error}
               </Typography>
-              <Typography id="modal-desc">
-                Top up to vote
-                <Sheet>
-                  <button className="border border-green-700 text-white bg-green-800 hover:bg-green-600 py-2 px-4 rounded-lg my-1">
-                    Pay with Crypto
-                  </button>
-                  <button className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-800 py-2 px-4 rounded-lg ml-2 my-1">
-                    Pay with Credit Card
-                  </button>
-                </Sheet>
-                <button
-                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
-                  disabled
-                >
-                  Vote
+              <Typography id="modal-desc">Top up to vote</Typography>
+              <Sheet>
+                <button className="border border-green-700 text-white bg-green-800 hover:bg-green-600 py-2 px-4 rounded-lg my-1">
+                  Pay with Crypto
                 </button>
-              </Typography>
+                <button className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-800 py-2 px-4 rounded-lg ml-2 my-1">
+                  Pay with Credit Card
+                </button>
+              </Sheet>
+              <button
+                className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
+                disabled
+              >
+                Vote
+              </button>
             </Sheet>
           </Modal>
 
@@ -232,30 +241,27 @@ const Page = () => {
               }}
             >
               <ModalClose variant="plain" sx={{ m: 1 }} />
-              <div id="modal-title">
+              <Typography
+                id="modal-title"
+                component="h2"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                marginBottom={2}
+              >
+                Application for{" "}
                 <Typography
-                  component="h2"
-                  level="h4"
-                  textColor="inherit"
-                  fontWeight="lg"
-                  marginBottom={2}
+                  style={{
+                    fontSize: 20,
+                    background:
+                      "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
                 >
-                  Application for{" "}
-                  <Typography
-                    component="h2"
-                    level="h4"
-                    style={{
-                      fontSize: 20,
-                      background:
-                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {campaign?.title}
-                  </Typography>
+                  {campaign?.title}
                 </Typography>
-              </div>
+              </Typography>
               <Typography
                 component="h3"
                 level="h4"
@@ -308,30 +314,28 @@ const Page = () => {
               }}
             >
               <ModalClose variant="plain" sx={{ m: 1 }} />
-              <div id="modal-title">
+              <Typography
+                id="modal-title"
+                component="h2"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                marginBottom={2}
+              >
+                Nominate your friend for{" "}
                 <Typography
-                  component="h2"
-                  level="h4"
-                  textColor="inherit"
-                  fontWeight="lg"
-                  marginBottom={2}
+                  style={{
+                    fontSize: 20,
+                    background:
+                      "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
                 >
-                  Nominate your friend for{" "}
-                  <Typography
-                    component="h2"
-                    level="h4"
-                    style={{
-                      fontSize: 20,
-                      background:
-                        "-webkit-linear-gradient(45deg, #FE6B8B 30%, #53acff 90%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {campaign?.title}
-                  </Typography>
+                  {campaign?.title}
                 </Typography>
-              </div>
+              </Typography>
+
               <Select
                 placeholder="Nominate one of your friends…"
                 size="lg"
