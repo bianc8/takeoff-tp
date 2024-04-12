@@ -12,6 +12,7 @@ import {
   Sheet,
   Textarea,
   Typography,
+  Link,
 } from "@mui/joy";
 
 const Page = () => {
@@ -278,9 +279,12 @@ const Page = () => {
                 className="mt-2"
               />
               <Sheet>
-                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1">
+                <Link
+                  href="/profile?verify=WorldId"
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1"
+                >
                   Verify with WorldID
-                </button>
+                </Link>
                 <button
                   className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 my-1 opacity-30"
                   disabled
@@ -363,9 +367,12 @@ const Page = () => {
                 className="mt-2"
               />
               <Sheet>
-                <button className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1">
+                <Link
+                  href="/profile?verify=WorldId"
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1"
+                >
                   Verify with WorldID
-                </button>
+                </Link>
                 <button
                   className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
                   disabled

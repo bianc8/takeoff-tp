@@ -1,6 +1,12 @@
 "use client";
+import {
+  IDKitWidget,
+  ISuccessResult,
+  VerificationLevel,
+} from "@worldcoin/idkit";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Box, Button, Sheet, Typography } from "@mui/joy";
+import { Button, Typography } from "@mui/joy";
 import Navbar from "../components/Navbar";
 import { useSmartAccount } from "../hooks/SmartAccountContext";
 import { BASE_SEPOLIA_SCAN_URL } from "../lib/constants";
@@ -13,15 +19,40 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "../components/ui/carousel";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const Profile = () => {
+  const searchParams = useSearchParams();
+  const [startVerification, setStartVerification] = useState(false);
+
   const [reloading, setReloading] = useState(false);
   const { smartAccountAddress } = useSmartAccount();
+
+  useEffect(() => {
+    setStartVerification(searchParams.get("verify") === "WorldId");
+  });
 
   const handleReload = () => {
     setReloading(true);
     setTimeout(() => setReloading(false), 2000);
+  };
+
+  const onSuccess = (result: ISuccessResult) => {
+    console.log("Success", result);
+  };
+
+  const handleVerify = ({
+    proof,
+    merkle_root,
+    nullifier_hash,
+    verification_level,
+  }: {
+    proof: string;
+    merkle_root: string;
+    nullifier_hash: string;
+    verification_level: VerificationLevel;
+  }) => {
+    console.log("HandleVerify", proof, verification_level);
   };
 
   return (
@@ -65,24 +96,44 @@ const Profile = () => {
             </Link>
             <div className="flex align-middle text-center items-center justify-around">
               <div className="flex align-middle text-center items-center gap-2">
-                <div className="flex flex-col text-center p-4 border border-gray-400 rounded-lg w-40">
-                  <Typography
-                    component="h2"
-                    level="h4"
-                    textColor="inherit"
-                    fontWeight="xl"
-                  >
-                    {profile?.builderScore}
-                  </Typography>
-                  <Typography
-                    component="p"
-                    level="body1"
-                    textColor="inherit"
-                    fontWeight="md"
-                  >
-                    Builder Score
-                  </Typography>
-                </div>
+                {profile?.builderScore ? (
+                  <div className="flex flex-col text-center p-4 border border-gray-400 rounded-lg w-40">
+                    <Typography
+                      component="h2"
+                      level="h4"
+                      textColor="inherit"
+                      fontWeight="xl"
+                    >
+                      {profile?.builderScore}
+                    </Typography>
+                    <Typography
+                      component="p"
+                      level="body1"
+                      textColor="inherit"
+                      fontWeight="md"
+                    >
+                      Builder Score
+                    </Typography>
+                  </div>
+                ) : (
+                  <div className="flex flex-col text-center p-4 border border-gray-400 rounded-lg w-40">
+                    <Typography
+                      component="h2"
+                      level="h4"
+                      textColor="inherit"
+                      fontWeight="xl"
+                    >
+                      Connect your{" "}
+                      <a
+                        href="https://passport.talentprotocol.com/"
+                        target="_blank"
+                        className="underline text-violet-600"
+                      >
+                        Talent Passport
+                      </a>
+                    </Typography>
+                  </div>
+                )}
                 <button
                   type="button"
                   className="flex align-middle items-center bg-violet-600 text-white p-2 rounded-lg"
@@ -91,8 +142,31 @@ const Profile = () => {
                   <RefreshCw className={`${reloading ? "animate-spin" : ""}`} />
                 </button>
               </div>
-              <div>
-                <Button>Buy more votes</Button>
+              <div className="">
+                <div>
+                  <Button>Buy more votes</Button>
+                </div>
+                <div
+                  className={`border-4 p-6 ${
+                    startVerification
+                      ? "animate-pulse border-yellow-500 border-"
+                      : "border-white"
+                  }`}
+                >
+                  <IDKitWidget
+                    app_id={process.env.NEXT_PUBLIC_WORLID_APP_ID} // obtained from the Developer Portal
+                    action={process.env.NEXT_PUBLIC_WORLID_ACTION} // obtained from the Developer Portal
+                    onSuccess={onSuccess} // callback when the modal is closed
+                    handleVerify={handleVerify} // callback when the proof is received
+                    verification_level={VerificationLevel.Device}
+                    autoClose={true}
+                  >
+                    {({ open }) => (
+                      // This is the button that will open the IDKit modal
+                      <Button onClick={open}>Verify with World ID</Button>
+                    )}
+                  </IDKitWidget>
+                </div>
               </div>
             </div>
           </div>

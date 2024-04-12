@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import Navbar from "../components/Navbar";
-import { Button, Select, Option, SvgIcon, Input } from "@mui/joy";
+import { Button, Select, Option, SvgIcon, Input, Typography } from "@mui/joy";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { styled } from "@mui/joy";
+import { RefreshCw } from "lucide-react";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -20,6 +21,7 @@ const VisuallyHiddenInput = styled("input")`
 `;
 
 const CreateCampaign = () => {
+  const [stakedStatus, setStakedStatus] = useState("not-staked");
   const [startDate, setStartDate] = useState(dayjs());
   const [eligibilityRules, setEligibilityRules] = useState([
     { id: 0, inputElement: "", comparer: "", compareValue: "" },
@@ -39,6 +41,12 @@ const CreateCampaign = () => {
     if (data.ok) {
       router.push("/campaigns");
     }
+  };
+
+  const onStake = async () => {
+    // stake 10 USDC
+    setStakedStatus("staking");
+    setTimeout(() => setStakedStatus("staked"), 2000);
   };
 
   return (
@@ -205,21 +213,49 @@ const CreateCampaign = () => {
           </label>
           <label>
             Stake at least 10 USDC to create campaign
-            <button
-              name="stake"
-              type="button"
-              className="border border-violet-600 text-violet-600 hover:text-white hover:bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
-            >
-              Stake
-            </button>
+            {stakedStatus === "not-staked" ? (
+              <button
+                name="stake"
+                type="button"
+                className="border border-violet-600 text-violet-600 hover:text-white hover:bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
+                onClick={onStake}
+              >
+                Stake
+              </button>
+            ) : stakedStatus === "staking" ? (
+              <button
+                type="submit"
+                className="flex gap-2 align-middle items-center text-center mx-auto border border-violet-600 text-white hover:text-violet-600 hover:bg-white bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
+                disabled
+              >
+                <RefreshCw className="animate-spin" /> Staking...
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="flex gap-2 align-middle items-center text-center mx-auto border border-violet-600 text-white hover:text-violet-600 hover:bg-white bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
+              >
+                Staked
+              </button>
+            )}
           </label>
-          <button
-            type="submit"
-            className="opacity-20 w-20 border border-violet-600 text-white hover-text-violet-600 hover-bg-white bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
-            disabled
-          >
-            Create
-          </button>
+
+          {stakedStatus === "staked" ? (
+            <button
+              type="submit"
+              className="border border-violet-600 text-white hover:text-violet-600 hover:bg-white bg-violet-700 py-2 px-4 rounded-lg ml-2 my-1"
+            >
+              Create
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="flex gap-2 align-middle items-center text-center mx-auto border border-orange-700 text-white hover:text-orange-700 hover:bg-white bg-orange-700 py-2 px-4 rounded-lg ml-2 my-1"
+              disabled
+            >
+              You have to stake
+            </button>
+          )}
         </form>
       </div>
     </div>
