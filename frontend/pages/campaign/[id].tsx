@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import type { ICampaign, ICandidate } from "../../components/Campaign";
 import { campaigns } from "../../lib/campaigns";
+
 import { formatStringToUSD } from "../../lib/utils";
 import {
   Modal,
@@ -27,10 +28,6 @@ const Page = () => {
   const router = useRouter();
   const { id } = router.query;
   const campaign = campaigns.find((c: ICampaign) => `${c.id}` === id);
-
-  useEffect(() => {
-    // fetch data with id
-  }, [id]);
 
   const checkVotes = (e: React.FormEvent<HTMLInputElement>, name: string) => {
     // check if user has votes left
@@ -202,14 +199,21 @@ const Page = () => {
                 {error}
               </Typography>
               <Typography id="modal-desc">Top up to vote</Typography>
-              <Sheet>
+              <div className="flex items-center align-middle text-center">
                 <button className="border border-green-700 text-white bg-green-800 hover:bg-green-600 py-2 px-4 rounded-lg my-1">
                   Pay with Crypto
                 </button>
-                <button className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-800 py-2 px-4 rounded-lg ml-2 my-1">
-                  Pay with Credit Card
+                <button
+                  id="cbpay-button-container"
+                  className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-800 rounded-lg ml-2"
+                >
+                  <img
+                    src="/images/cpay-btn.png"
+                    alt="pay with card on coinbase pay"
+                    width={100}
+                  />
                 </button>
-              </Sheet>
+              </div>
               <button
                 className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
                 disabled

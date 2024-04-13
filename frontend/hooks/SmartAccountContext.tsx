@@ -16,10 +16,7 @@ import {
   createPublicErc4337Client,
 } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import {
-  LightSmartContractAccount,
-  getDefaultLightAccountFactory,
-} from "@alchemy/aa-accounts";
+import { LightSmartContractAccount } from "@alchemy/aa-accounts";
 import {
   BASE_SEPOLIA_ALCHEMY_RPC_URL,
   BASE_SEPOLIA_ENTRYPOINT_ADDRESS,

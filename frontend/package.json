@@ -15,6 +15,7 @@
     "@alchemy/aa-accounts": "^0.1.1",
     "@alchemy/aa-alchemy": "^0.1.1",
     "@alchemy/aa-core": "^0.1.1",
+    "@coinbase/cbpay-js": "^2.1.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/inter": "^5.0.17",
@@ -44,8 +45,8 @@
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "^1.0.3",
-    "@types/node": "^17.0.35",
-    "@types/react": "18.0.9",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.77",
     "autoprefixer": "^10.4.7",
     "dotenv-cli": "^6.0.0",
     "eslint": "^8.23.0",
@@ -53,6 +54,6 @@
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.2",
     "ts-node": "^10.9.1",
-    "typescript": "^5.1.4"
+    "typescript": "^5.4.5"
   }
 }

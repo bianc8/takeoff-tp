@@ -52,7 +52,13 @@ const Profile = () => {
     nullifier_hash: string;
     verification_level: VerificationLevel;
   }) => {
-    console.log("HandleVerify", proof, verification_level);
+    console.log(
+      "HandleVerify",
+      proof,
+      merkle_root,
+      nullifier_hash,
+      verification_level
+    );
   };
 
   return (
@@ -108,7 +114,7 @@ const Profile = () => {
                     </Typography>
                     <Typography
                       component="p"
-                      level="body1"
+                      level="body-md"
                       textColor="inherit"
                       fontWeight="md"
                     >
@@ -154,8 +160,11 @@ const Profile = () => {
                   }`}
                 >
                   <IDKitWidget
-                    app_id={process.env.NEXT_PUBLIC_WORLID_APP_ID} // obtained from the Developer Portal
-                    action={process.env.NEXT_PUBLIC_WORLID_ACTION} // obtained from the Developer Portal
+                    app_id={
+                      (process.env.NEXT_PUBLIC_WORLID_APP_ID ||
+                        "app_123") as `app_${string}`
+                    } // obtained from the Developer Portal
+                    action={process.env.NEXT_PUBLIC_WORLID_ACTION || ""} // obtained from the Developer Portal
                     onSuccess={onSuccess} // callback when the modal is closed
                     handleVerify={handleVerify} // callback when the proof is received
                     verification_level={VerificationLevel.Device}
@@ -182,7 +191,7 @@ const Profile = () => {
           </Typography>
           <Typography
             component="p"
-            level="body1"
+            level="body-md"
             textColor="inherit"
             fontSize={18}
             marginBottom={1}
@@ -205,10 +214,18 @@ const Profile = () => {
                     >
                       {campaign.title}
                     </Typography>
-                    <Typography component="p" level="body1" textColor="inherit">
+                    <Typography
+                      component="p"
+                      level="body-md"
+                      textColor="inherit"
+                    >
                       {campaign.description}
                     </Typography>
-                    <Typography component="p" level="body1" textColor="inherit">
+                    <Typography
+                      component="p"
+                      level="body-md"
+                      textColor="inherit"
+                    >
                       You received this SoulBoundToken!
                     </Typography>
                     <a

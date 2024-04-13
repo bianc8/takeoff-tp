@@ -2,7 +2,6 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { PrivyProvider } from "@privy-io/react-auth";
-import { useRouter } from "next/router";
 import { baseSepolia } from "viem/chains";
 import { SmartAccountProvider } from "../hooks/SmartAccountContext";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -12,8 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "@fontsource/inter";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
   return (
     <>
       <Head>

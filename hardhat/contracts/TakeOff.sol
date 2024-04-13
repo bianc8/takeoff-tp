@@ -13,15 +13,6 @@ contract TakeOff is ERC721, ERC721URIStorage, Ownable {
         address initialOwner
     ) ERC721("TakeOff", "TKOFF") Ownable(initialOwner) {}
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override {
-        require(from == address(0), "Token not transferable");
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -29,12 +20,6 @@ contract TakeOff is ERC721, ERC721URIStorage, Ownable {
     }
 
     // The following functions are overrides required by Solidity.
-
-    function _burn(
-        uint256 tokenId
-    ) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
 
     function tokenURI(
         uint256 tokenId

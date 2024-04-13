@@ -17,6 +17,7 @@ export const campaigns: ICampaign[] = [
         votes: 10,
         applicationLetter: "Application Letter",
         votedBy: ["Jane Doe", "Alice Doe"],
+        prize: 850,
       },
       {
         id: 2,
@@ -24,6 +25,7 @@ export const campaigns: ICampaign[] = [
         votes: 5,
         applicationLetter: "Application Letter2",
         votedBy: ["Jane Doe"],
+        prize: 550,
       },
       {
         id: 3,
@@ -31,6 +33,7 @@ export const campaigns: ICampaign[] = [
         votes: 11,
         applicationLetter: "Application Letter",
         votedBy: ["Jane Doe", "Alice Doe"],
+        prize: 500,
       },
       {
         id: 4,
@@ -38,6 +41,7 @@ export const campaigns: ICampaign[] = [
         votes: 4,
         applicationLetter: "Application Letter2",
         votedBy: ["Jane Doe"],
+        prize: 450,
       },
     ],
     voters: 76,

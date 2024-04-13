@@ -1,6 +1,8 @@
-import { LinearProgress } from "@mui/joy";
-import moment from "moment";
+"use client";
+import Image from "next/image";
 import Link from "next/link";
+import moment from "moment";
+import { LinearProgress } from "@mui/joy";
 import { formatStringToUSD } from "../lib/utils";
 
 export type ICandidate = {
@@ -43,10 +45,12 @@ const Campaign = ({ campaign }: { campaign: ICampaign }) => {
   return (
     <div className="w-full bg-white shadow-lg rounded-lg p-4 m-4">
       <Link href={`/campaign/${campaign.id}`}>
-        <img
+        <Image
           src={campaign.image}
           alt={campaign.title}
           className="w-full h-64 object-cover object-center rounded-lg"
+          width={500}
+          height={300}
         />
       </Link>
       <div className="mt-4 w-full">
