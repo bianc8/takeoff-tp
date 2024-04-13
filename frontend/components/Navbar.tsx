@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useSmartAccount } from "../hooks/SmartAccountContext";
-import { users } from "../lib/users";
-import { profile } from "../lib/profile";
+import { TakeOffUser, useUsers } from "../hooks/users";
 import { Button, Input, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 import { CircleUser } from "lucide-react";
 
 const Navbar = () => {
+  const { loginUser, getLoggedinUser, getUser, addUser } = useUsers();
+  const profile = getLoggedinUser();
+
   const [firstLogin, setFirstLogin] = useState(false);
   const [openInviteModal, setOpenInviteModal] = useState(false);
 
@@ -19,15 +21,26 @@ const Navbar = () => {
 
   const { login } = useLogin({
     // Navigate the user to the dashboard after logging in
-    onComplete: () => setFirstLogin(false),
+    onComplete: () => {
+      const newUser = {
+        ...user,
+        votes: 10,
+        builderScore: 0,
+        hasConnectedTalentProtocol: false,
+        hasVerifiedWorldID: false,
+        partecipated: [],
+        nominations: [],
+      } as TakeOffUser;
+      loginUser(newUser);
+      addUser(newUser);
+      setFirstLogin(false);
+    },
   });
 
   useEffect(() => {
     if (firstLogin && ready && authenticated) {
       if (user) {
-        const existingUser = users.find(
-          (u) => u?.wallet?.address === user?.wallet?.address
-        );
+        const existingUser = getUser(user?.wallet?.address || "");
         if (!existingUser) {
           // open modal to ask for community invite code
           setOpenInviteModal(true);
@@ -35,7 +48,7 @@ const Navbar = () => {
       }
     }
     setFirstLogin(false);
-  }, [ready, authenticated, user]);
+  }, [ready, authenticated, user, user?.wallet?.address]);
 
   return (
     <nav id="navbar" className="flex w-full items-center justify-around">
@@ -52,13 +65,13 @@ const Navbar = () => {
         {authenticated ? (
           <>
             <Sheet color="neutral" className="my-2">
-              <p className="text-lg font-semibold">{profile.votes} votes</p>
+              <p className="text-lg font-semibold">{profile?.votes} votes</p>
               <Link
                 href="/profile"
                 className="flex text-xs text-gray-500 hover:text-violet-600 items-center gap-1"
               >
                 <CircleUser width={18} height={18} />
-                {profile.name ? profile.name : smartAccountAddress}
+                {smartAccountAddress}
               </Link>
             </Sheet>
             <button

@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import type { ICampaign, ICandidate } from "../../components/Campaign";
 import { campaigns } from "../../lib/campaigns";
-
+import { useUsers } from "../../hooks/users";
 import { formatStringToUSD } from "../../lib/utils";
 import {
   Modal,
@@ -14,9 +14,16 @@ import {
   Textarea,
   Typography,
   Link,
+  Input,
 } from "@mui/joy";
+import { usePrivy } from "@privy-io/react-auth";
+import type { TakeOffUser } from "../../hooks/users";
 
 const Page = () => {
+  const [profile, setProfile] = useState<TakeOffUser>();
+  const { user } = usePrivy();
+  const { getUser } = useUsers();
+
   const [candidateVotes, setCandidateVotes] = useState<number>(0);
   const [candidate, setCandidate] = useState<ICandidate>();
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false);
@@ -25,6 +32,10 @@ const Page = () => {
   const [openNominateModal, setOpenNominateModal] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
+  useEffect(() => {
+    setProfile(getUser(user?.wallet?.address || ""));
+  }, [user, user?.wallet?.address]);
+
   const router = useRouter();
   const { id } = router.query;
   const campaign = campaigns.find((c: ICampaign) => `${c.id}` === id);
@@ -32,7 +43,6 @@ const Page = () => {
   const checkVotes = (e: React.FormEvent<HTMLInputElement>, name: string) => {
     // check if user has votes left
     if (parseInt(e.currentTarget.value) <= (candidate?.votes || 0)) {
-      // error vote
       setError(
         `You can give at least ${1 + (candidate?.votes || 0)} votes to ${name}`
       );
@@ -131,6 +141,7 @@ const Page = () => {
               </div>
             ))}
           </div>
+
           {/* Voting modal */}
           <Modal
             aria-labelledby="modal-title"
@@ -183,18 +194,18 @@ const Page = () => {
               <Typography id="modal-desc" textColor="text.tertiary">
                 You have{" "}
                 <span>
-                  <b>XYZ</b>
+                  <b>{profile?.votes}</b>
                 </span>{" "}
                 votes left
               </Typography>
               <Typography id="modal-desc" textColor="text.tertiary">
                 How many votes do you want to give?
-                <input
-                  type="number"
-                  value={candidateVotes}
-                  onChange={(e) => checkVotes(e, candidate?.name || "")}
-                />
               </Typography>
+              <Input
+                type="number"
+                value={candidateVotes}
+                onChange={(e) => checkVotes(e, candidate?.name || "")}
+              />
               <Typography id="modal-desc" color="danger">
                 {error}
               </Typography>
@@ -214,10 +225,7 @@ const Page = () => {
                   />
                 </button>
               </div>
-              <button
-                className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
-                disabled
-              >
+              <button className="border border-violet-700 text-violet-700 hover:text-white hover:bg-violet-700 py-2 px-4 rounded-lg mt-10 my-1">
                 Vote
               </button>
             </Sheet>
@@ -282,20 +290,22 @@ const Page = () => {
                 size="lg"
                 className="mt-2"
               />
-              <Sheet>
-                <Link
-                  href="/profile?verify=WorldId"
-                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1"
-                >
-                  Verify with WorldID
-                </Link>
+              <div className="flex flex-row items-center text-center align-middle gap-2 my-2">
+                {profile?.hasVerifiedWorldID ? null : (
+                  <Link
+                    href="/profile?verify=WorldId"
+                    className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mr-2"
+                  >
+                    Verify with WorldID
+                  </Link>
+                )}
                 <button
-                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 my-1 opacity-30"
-                  disabled
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg"
+                  disabled={!profile?.hasVerifiedWorldID}
                 >
                   Apply
                 </button>
-              </Sheet>
+              </div>
             </Sheet>
           </Modal>
 
@@ -370,20 +380,22 @@ const Page = () => {
                 size="lg"
                 className="mt-2"
               />
-              <Sheet>
-                <Link
-                  href="/profile?verify=WorldId"
-                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-4 mr-2 my-1"
-                >
-                  Verify with WorldID
-                </Link>
+              <div className="flex flex-row items-center text-center align-middle gap-2 my-2">
+                {profile?.hasVerifiedWorldID ? null : (
+                  <Link
+                    href="/profile?verify=WorldId"
+                    className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mr-2"
+                  >
+                    Verify with WorldID
+                  </Link>
+                )}
                 <button
-                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg mt-10 my-1 opacity-30"
-                  disabled
+                  className="border border-violet-700 text-violet-700 py-2 px-4 rounded-lg"
+                  disabled={!profile?.hasVerifiedWorldID}
                 >
                   Apply
                 </button>
-              </Sheet>
+              </div>
             </Sheet>
           </Modal>
         </div>

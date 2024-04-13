@@ -6,12 +6,13 @@ import {
 } from "@worldcoin/idkit";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button, Typography } from "@mui/joy";
 import Navbar from "../components/Navbar";
 import { useSmartAccount } from "../hooks/SmartAccountContext";
 import { BASE_SEPOLIA_SCAN_URL } from "../lib/constants";
 import { CircleUser, RefreshCw, SquareArrowOutUpRight } from "lucide-react";
-import { profile } from "../lib/profile";
+import { useUsers } from "../hooks/users";
 import {
   Carousel,
   CarouselContent,
@@ -19,9 +20,12 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "../components/ui/carousel";
-import { useSearchParams } from "next/navigation";
 
 const Profile = () => {
+  const { getLoggedinUser, updateUser } = useUsers();
+  const profile = getLoggedinUser();
+  console.log("profile", profile);
+
   const searchParams = useSearchParams();
   const [startVerification, setStartVerification] = useState(false);
 
@@ -39,6 +43,12 @@ const Profile = () => {
 
   const onSuccess = (result: ISuccessResult) => {
     console.log("Success", result);
+    if (profile) {
+      updateUser({
+        ...profile,
+        hasVerifiedWorldID: true,
+      });
+    }
   };
 
   const handleVerify = ({
@@ -77,22 +87,15 @@ const Profile = () => {
         <div className="grid grid-rows-1 grid-cols-4 gap-2 my-5">
           <CircleUser width={150} height={150} />
           <div className="col-span-3">
-            <Typography
-              component="h1"
-              level="h3"
-              textColor="inherit"
-              fontWeight="lg"
-            >
-              {profile?.name}
-            </Typography>
             <Link
               href={`${BASE_SEPOLIA_SCAN_URL}/address/${smartAccountAddress}#tokentxnsErc721`}
               target="_blank"
+              className="flex flex-row text-center align-middle items-center gap-1"
             >
               <Typography
                 className="flex flex-row text-center align-middle items-center gap-1"
-                component="h3"
-                level="h4"
+                component="p"
+                level="body-sm"
                 textColor="inherit"
                 fontWeight="sm"
               >
@@ -152,30 +155,32 @@ const Profile = () => {
                 <div>
                   <Button>Buy more votes</Button>
                 </div>
-                <div
-                  className={`border-4 p-6 ${
-                    startVerification
-                      ? "animate-pulse border-yellow-500 border-"
-                      : "border-white"
-                  }`}
-                >
-                  <IDKitWidget
-                    app_id={
-                      (process.env.NEXT_PUBLIC_WORLID_APP_ID ||
-                        "app_123") as `app_${string}`
-                    } // obtained from the Developer Portal
-                    action={process.env.NEXT_PUBLIC_WORLID_ACTION || ""} // obtained from the Developer Portal
-                    onSuccess={onSuccess} // callback when the modal is closed
-                    handleVerify={handleVerify} // callback when the proof is received
-                    verification_level={VerificationLevel.Device}
-                    autoClose={true}
+                {profile?.hasVerifiedWorldID ? null : (
+                  <div
+                    className={`border-4 p-6 ${
+                      startVerification
+                        ? "animate-pulse border-yellow-500 border-"
+                        : "border-white"
+                    }`}
                   >
-                    {({ open }) => (
-                      // This is the button that will open the IDKit modal
-                      <Button onClick={open}>Verify with World ID</Button>
-                    )}
-                  </IDKitWidget>
-                </div>
+                    <IDKitWidget
+                      app_id={
+                        (process.env.NEXT_PUBLIC_WORLID_APP_ID ||
+                          "app_123") as `app_${string}`
+                      } // obtained from the Developer Portal
+                      action={process.env.NEXT_PUBLIC_WORLID_ACTION || ""} // obtained from the Developer Portal
+                      onSuccess={onSuccess} // callback when the modal is closed
+                      handleVerify={handleVerify} // callback when the proof is received
+                      verification_level={VerificationLevel.Device}
+                      autoClose={true}
+                    >
+                      {({ open }) => (
+                        // This is the button that will open the IDKit modal
+                        <Button onClick={open}>Verify with World ID</Button>
+                      )}
+                    </IDKitWidget>
+                  </div>
+                )}
               </div>
             </div>
           </div>
